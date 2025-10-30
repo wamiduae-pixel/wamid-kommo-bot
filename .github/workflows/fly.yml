@@ -8,6 +8,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Debug context
+        run: |
+          pwd
+          ls -la
+          echo "---- fly.toml ----"
+          cat fly.toml
       - name: Deploy
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
