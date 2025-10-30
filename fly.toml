@@ -1,12 +1,21 @@
-app = "wamid-kommo-bot-uae"
-primary_region = "sin"
-
-[build]
-  dockerfile = "Dockerfile"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_start_machines = true
-  auto_stop_machines = false
-  min_machines_running = 1
+name: Deploy to Fly
+on:
+  push:
+    branches: [ main ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Debug context
+        run: |
+          pwd
+          ls -la
+          echo "---- fly.toml ----"
+          cat fly.toml
+      - name: Deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          flyctl deploy --app wamid-kommo-bot-uae --config fly.toml --remote-only=false
